@@ -50,13 +50,18 @@ describe "Kernel#BigDecimal" do
 
   ruby_version_is "2.4" do
     it "raises ArgumentError for invalid strings" do
-      lambda { BigDecimal("ruby") }.should raise_error(ArgumentError)
-      lambda { BigDecimal("  \t\n \r-\t\t\tInfinity   \n") }.should raise_error(ArgumentError)
+      ["ruby", "  \t\n \r-\t\t\tInfinity   \n", "."].each do |invalid_string|
+        lambda { BigDecimal(invalid_string) }.should raise_error(ArgumentError)
+      end
     end
   end
 
   it "allows omitting the integer part" do
     BigDecimal(".123").should == BigDecimal("0.123")
+  end
+
+  it "allows omitting the decimal part" do
+    BigDecimal("123.").should == BigDecimal("123.0")
   end
 
   it "allows for underscores in all parts" do
